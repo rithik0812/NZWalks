@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NZWalksAPI.Data;
+using NZWalksAPI.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,14 @@ builder.Services.AddDbContext<NZWalksDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("NZWalks"));
 });
+
+// Add IRegionRepository interface and the SQL implementation of it into the service container
+builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
+
+// Automapper will scan the whole assembly for all the profiles, then use the profiles to map the data 
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+
 
 var app = builder.Build();
 
