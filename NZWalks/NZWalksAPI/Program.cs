@@ -20,6 +20,12 @@ builder.Services.AddDbContext<NZWalksDBContext>(options =>
 // Add IRegionRepository interface and the SQL implementation of it into the service container
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
 
+// Add IWalksRepository interface and the SQL implementation of it into the service container
+builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
+
+// Add IWalksDiffucltyRepository interface and the SQL implementation of it into the service container
+builder.Services.AddScoped<IWalksDifficultyRepository, SQLWalksDifficultyRepository>();
+
 // Automapper will scan the whole assembly for all the profiles, then use the profiles to map the data 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
