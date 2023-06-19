@@ -126,5 +126,46 @@ namespace NZWalksAPI.Controllers {
         [HttpPut]
         [Route(("{id:guid}"))]
 
+        public async Task<IActionResult> UpdateRegionByIDAsync([FromRoute] Guid id, [FromBody] Models.DTO.UpdateRegionRequest updateRegion) 
+        {
+            // Convert the updateRegion object to domain model
+
+            var DomainUpdateRegionObject = new Models.Domain.Region
+            {
+                Code = updateRegion.Code,
+                Name = updateRegion.Name,
+                Area = updateRegion.Area,
+                Lat = updateRegion.Lat,
+                Long = updateRegion.Long,
+                Population = updateRegion.Population
+            };
+
+            // Try and update region using repository 
+
+            var UpdatedRegion = await _regionRepository.UpdateRegionAsync(id, DomainUpdateRegionObject);
+
+            // if the repo send back null then send a NotFound
+
+            if (UpdatedRegion == null) 
+            {
+                return NotFound(); 
+            }
+
+            // if the update succeeds then convert the returned updated object to a DTO and send OkResponse 
+
+            var DTOUpdatedRegion = new Models.DTO.Region
+            {
+                ID = UpdatedRegion.ID,
+                Code = UpdatedRegion.Code,
+                Name = UpdatedRegion.Name,
+                Area = UpdatedRegion.Area,
+                Lat = UpdatedRegion.Lat,
+                Long = UpdatedRegion.Long,
+                Population = UpdatedRegion.Population
+            };
+
+            return Ok(DTOUpdatedRegion);
+        }
+
     } 
 }
