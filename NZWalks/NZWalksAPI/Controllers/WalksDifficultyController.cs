@@ -52,6 +52,13 @@ namespace NZWalksAPI.Controllers
         public async Task<IActionResult> AddWalkDifficultyAsync(
             Models.DTO.AddWalksDifficultyRequestDTO addWalkDifficultyRequest)
         {
+            // validation checks 
+
+            if (ValidateAddWalksDifficulty(addWalkDifficultyRequest) == false)
+            {
+                return BadRequest(ModelState);
+            }
+
             // Convert DTO to Domain model
             var walkDifficultyDomain = new Models.Domain.WalkDifficulty
             {
@@ -74,6 +81,13 @@ namespace NZWalksAPI.Controllers
         public async Task<IActionResult> UpdateWalkDifficultyAsync(Guid id,
             Models.DTO.UpdateWalksDiffcultyRequestDTO updateWalkDifficultyRequest)
         {
+
+            // validation checks 
+
+            if (ValidateUpdateWalksDifficulty(updateWalkDifficultyRequest) == false)
+            {
+                return BadRequest(ModelState);
+            }
 
             // Convert DTO to Domiain Model
             var walkDifficultyDomain = new Models.Domain.WalkDifficulty
@@ -110,6 +124,62 @@ namespace NZWalksAPI.Controllers
             var walkDifficultyDTO = mapper.Map<Models.DTO.WalkDifficulty>(walkDifficultyDomain);
             return Ok(walkDifficultyDTO);
         }
+
+        #region Private Methods
+
+        // validation of Add walksDifficulty endpoint : 
+        private bool ValidateAddWalksDifficulty(Models.DTO.AddWalksDifficultyRequestDTO addWalksDifficultyRequest)
+        {
+            if (addWalksDifficultyRequest == null)
+            {
+                ModelState.AddModelError(nameof(addWalksDifficultyRequest), "Request for adding a region cannot be null");
+
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(addWalksDifficultyRequest.Code))
+            {
+                ModelState.AddModelError(nameof(addWalksDifficultyRequest.Code), $"{nameof(addWalksDifficultyRequest.Code)} cannot be null/ empty / whitespace");
+            }
+            
+            // if any of the validation checks fail then return false
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+
+            // if the all the validation chacks pass then return true
+            return true;
+
+        }
+
+        // validation of Update walksDiffiulty endpoint : 
+        private bool ValidateUpdateWalksDifficulty(Models.DTO.UpdateWalksDiffcultyRequestDTO updateWalksDifficultyRequest)
+        {
+            if (updateWalksDifficultyRequest == null)
+            {
+                ModelState.AddModelError(nameof(updateWalksDifficultyRequest), "Request for adding a region cannot be null");
+
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(updateWalksDifficultyRequest.Code))
+            {
+                ModelState.AddModelError(nameof(updateWalksDifficultyRequest.Code), $"{nameof(updateWalksDifficultyRequest.Code)} cannot be null/ empty / whitespace");
+            }
+
+            // if any of the validation checks fail then return false
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+
+            // if the all the validation chacks pass then return true
+            return true;
+
+        }
+
+        #endregion
 
     }
 }

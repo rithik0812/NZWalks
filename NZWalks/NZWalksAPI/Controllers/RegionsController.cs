@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NZWalksAPI.Models.Domain;
 using NZWalksAPI.Repository;
+using System.Runtime.CompilerServices;
 
 namespace NZWalksAPI.Controllers {
 
@@ -56,6 +57,13 @@ namespace NZWalksAPI.Controllers {
 
         public async Task<IActionResult> AddRegionByIDAsync(Models.DTO.AddRegionsRequestDTO addRegion) 
         {
+            // validation checks 
+
+            if (ValidateAddRegionAsync(addRegion) == false) 
+            { 
+                return BadRequest(ModelState);  
+            }
+
             // convert the user input to domain model so that we can pass it into the add method in the repo.add method
             // (note: we set the guid id in the repo.add method so the user wont set that param)
 
@@ -128,6 +136,12 @@ namespace NZWalksAPI.Controllers {
 
         public async Task<IActionResult> UpdateRegionByIDAsync([FromRoute] Guid id, [FromBody] Models.DTO.UpdateRegionRequestDTO updateRegion) 
         {
+            // validation checks 
+            if (ValidateUpdateRegionAsync(updateRegion) == false) 
+            {
+                BadRequest(ModelState);
+            }
+
             // Convert the updateRegion object to domain model
 
             var DomainUpdateRegionObject = new Models.Domain.Region
@@ -167,5 +181,112 @@ namespace NZWalksAPI.Controllers {
             return Ok(DTOUpdatedRegion);
         }
 
-    } 
+        #region Private Methods
+
+        // validation of AddRegion endpoint : 
+        private bool ValidateAddRegionAsync(Models.DTO.AddRegionsRequestDTO addRegionsRequest) 
+        {
+            if (addRegionsRequest == null) 
+            {
+                ModelState.AddModelError(nameof(addRegionsRequest),"Request for adding a region cannot be null");
+
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(addRegionsRequest.Code)) 
+            {
+                ModelState.AddModelError(nameof(addRegionsRequest.Code), $"{nameof(addRegionsRequest.Code)} cannot be null/ empty / whitespace");
+            }
+
+            if (string.IsNullOrWhiteSpace(addRegionsRequest.Name))
+            {
+                ModelState.AddModelError(nameof(addRegionsRequest.Name), $"{nameof(addRegionsRequest.Name)} cannot be null/ empty / whitespace");
+            }
+
+            if (addRegionsRequest.Area <= 0)
+            {
+                ModelState.AddModelError(nameof(addRegionsRequest.Area), $"{nameof(addRegionsRequest.Area)} cannot be less than or equal to 0");
+            }
+
+            if (addRegionsRequest.Lat == 0)
+            {
+                ModelState.AddModelError(nameof(addRegionsRequest.Lat), $"{nameof(addRegionsRequest.Lat)} cannot be equal to 0");
+            }
+
+            if (addRegionsRequest.Long == 0)
+            {
+                ModelState.AddModelError(nameof(addRegionsRequest.Long), $"{nameof(addRegionsRequest.Long)} cannot be equal to 0");
+            }
+
+            if (addRegionsRequest.Population <= 0)
+            {
+                ModelState.AddModelError(nameof(addRegionsRequest.Population), $"{nameof(addRegionsRequest.Population)} cannot be less than or equal to 0");
+            }
+
+            // if any of the validation checks fail then return false
+            if (ModelState.ErrorCount > 0)
+            {
+                return false; 
+            }
+
+            // if the all the validation chacks pass then return true
+            return true;
+
+        }
+
+        // validation for update endpoint
+        private bool ValidateUpdateRegionAsync(Models.DTO.UpdateRegionRequestDTO updateRegionsRequest)
+        {
+            if (updateRegionsRequest == null)
+            {
+                ModelState.AddModelError(nameof(updateRegionsRequest), "Request for adding a region cannot be null");
+
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(updateRegionsRequest.Code))
+            {
+                ModelState.AddModelError(nameof(updateRegionsRequest.Code), $"{nameof(updateRegionsRequest.Code)} cannot be null/ empty / whitespace");
+            }
+
+            if (string.IsNullOrWhiteSpace(updateRegionsRequest.Name))
+            {
+                ModelState.AddModelError(nameof(updateRegionsRequest.Name), $"{nameof(updateRegionsRequest.Name)} cannot be null/ empty / whitespace");
+            }
+
+            if (updateRegionsRequest.Area <= 0)
+            {
+                ModelState.AddModelError(nameof(updateRegionsRequest.Area), $"{nameof(updateRegionsRequest.Area)} cannot be less than or equal to 0");
+            }
+
+            if (updateRegionsRequest.Lat == 0)
+            {
+                ModelState.AddModelError(nameof(updateRegionsRequest.Lat), $"{nameof(updateRegionsRequest.Lat)} cannot be equal to 0");
+            }
+
+            if (updateRegionsRequest.Long == 0)
+            {
+                ModelState.AddModelError(nameof(updateRegionsRequest.Long), $"{nameof(updateRegionsRequest.Long)} cannot be equal to 0");
+            }
+
+            if (updateRegionsRequest.Population <= 0)
+            {
+                ModelState.AddModelError(nameof(updateRegionsRequest.Population), $"{nameof(updateRegionsRequest.Population)} cannot be less than or equal to 0");
+            }
+
+            // if any of the validation checks fail then return false
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+
+            // if the all the validation chacks pass then return true
+            return true;
+
+        }
+
+
+        #endregion
+
+    }
 }
