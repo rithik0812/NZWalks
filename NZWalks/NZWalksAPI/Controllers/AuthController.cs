@@ -31,7 +31,7 @@ namespace NZWalksAPI.Controllers
 
             var AuthenticatedUser = await userRepository.AuthenticateAsync(loginRequest.UserName, loginRequest.Password);
 
-            if (AuthenticatedUser != null) 
+            if (AuthenticatedUser != null ) 
             {
                 // GENERATE Jwt token
                 var token = await tokenHandler.CreateTokenAsync(AuthenticatedUser);

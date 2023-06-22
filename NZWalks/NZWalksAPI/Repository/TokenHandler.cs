@@ -14,7 +14,7 @@ namespace NZWalksAPI.Repository
         {
             this.configuration = configuration;
         }
-        public Task<string> CreateTokenAsync(User user)
+        public async Task<string> CreateTokenAsync(User user)
         {
             // Create Claims
             var claims = new List<Claim>();
@@ -37,8 +37,8 @@ namespace NZWalksAPI.Repository
                 claims,
                 expires: DateTime.Now.AddMinutes(15),
                 signingCredentials: credentials);
-
-            return Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
+  
+            return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
 
 
         }

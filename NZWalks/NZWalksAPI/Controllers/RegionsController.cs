@@ -9,7 +9,6 @@ namespace NZWalksAPI.Controllers {
 
     [ApiController]
     [Route("Regions")]
-    [Authorize]
     public class RegionsController : Controller
     {
         private IRegionRepository _regionRepository;
@@ -22,6 +21,7 @@ namespace NZWalksAPI.Controllers {
         }
 
         [HttpGet]
+        [Authorize(Roles = "reader")]
         public async Task<IActionResult> GetAllRegionsAsync()
         {
             // this method returns all the Regions in the DB then maps them into a DTO 
@@ -36,7 +36,8 @@ namespace NZWalksAPI.Controllers {
 
         [HttpGet]
         [Route(("{id:guid}"))]
-        [ActionName("GetSingleRegionAsync")]
+        [Authorize(Roles = "reader")]
+        //[ActionName("GetSingleRegionAsync")]
         public async Task<IActionResult> GetSingleRegionAsync(Guid id)
         {
 
@@ -56,6 +57,7 @@ namespace NZWalksAPI.Controllers {
         }
 
         [HttpPost]
+        [Authorize(Roles = "writer")]
 
         public async Task<IActionResult> AddRegionByIDAsync(Models.DTO.AddRegionsRequestDTO addRegion) 
         {
@@ -105,6 +107,7 @@ namespace NZWalksAPI.Controllers {
 
         [HttpDelete]
         [Route(("{id:guid}"))]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> DeleteRegionByIDAsync(Guid id)
         {
             // check if the region by that id exists in DB 
@@ -135,6 +138,7 @@ namespace NZWalksAPI.Controllers {
 
         [HttpPut]
         [Route(("{id:guid}"))]
+        [Authorize(Roles = "writer")]
 
         public async Task<IActionResult> UpdateRegionByIDAsync([FromRoute] Guid id, [FromBody] Models.DTO.UpdateRegionRequestDTO updateRegion) 
         {
